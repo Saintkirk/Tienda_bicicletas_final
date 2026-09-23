@@ -3,10 +3,8 @@ from .models import (
     MAX_PRECIO_CLP,
     Bicicleta,
     Categoria,
-    Cliente,
     Marca,
     Modelo,
-    Venta,
 )
 
 
@@ -175,42 +173,3 @@ class BicicletaForm(forms.ModelForm):
                 raise forms.ValidationError("El precio de oferta debe ser menor al precio normal.")
         return precio_oferta
 
-
-class ClienteForm(forms.ModelForm):
-    """Formulario para clientes"""
-
-    class Meta:
-        model = Cliente
-        fields = ["nombre", "apellido", "email", "telefono", "direccion", "ciudad"]
-        widgets = {
-            "nombre": forms.TextInput(attrs={"class": "form-control"}),
-            "apellido": forms.TextInput(attrs={"class": "form-control"}),
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
-            "telefono": forms.TextInput(attrs={"class": "form-control"}),
-            "direccion": forms.Textarea(attrs={"class": "form-control", "rows": 2}),
-            "ciudad": forms.TextInput(attrs={"class": "form-control"}),
-        }
-
-
-class VentaForm(forms.ModelForm):
-    """Formulario para registrar ventas"""
-
-    class Meta:
-        model = Venta
-        fields = ["cliente", "metodo_pago", "descuento", "impuesto", "notas"]
-        widgets = {
-            "cliente": forms.Select(attrs={"class": "form-select"}),
-            "metodo_pago": forms.Select(attrs={"class": "form-select"}),
-            "descuento": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
-            "impuesto": forms.NumberInput(attrs={"class": "form-control", "min": 0}),
-            "notas": forms.Textarea(attrs={"class": "form-control", "rows": 2}),
-        }
-
-
-class CarritoForm(forms.Form):
-    """Formulario para actualizar carrito"""
-
-    cantidad = forms.IntegerField(
-        min_value=1,
-        widget=forms.NumberInput(attrs={"class": "form-control", "min": 1}),
-    )

@@ -1,10 +1,16 @@
+"""
+URL configuration for config project.
+"""
 from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
+    # Panel de administración de Django
     path("admin/", admin.site.urls),
-    # Incluimos las URLs de la app bicicletas bajo el prefijo 'bicicletas/'
+    
+    # URLs de la app bicicletas bajo el prefijo 'bicicletas/'
     path("bicicletas/", include("bicicletas.urls")),
-    # Redirigimos la raíz principal también hacia las bicicletas (opcional pero muy útil)
+    
+    # Permite que la ruta raíz (http://127.0.0.1:8000/) cargue directamente las bicicletas
     path("", include("bicicletas.urls")),
 ]
