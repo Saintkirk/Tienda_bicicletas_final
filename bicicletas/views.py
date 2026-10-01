@@ -15,16 +15,13 @@ from .forms import BicicletaForm
 from .models import Bicicleta, Categoria, Marca, Modelo
 
 
-
-
-
 class ListaBicicletasView(ListView):
     """Lista todas las bicicletas con filtros y búsqueda"""
 
     model = Bicicleta
     template_name = "bicicletas/lista.html"
     context_object_name = "bicicletas"
-    paginate_by = 12
+    paginate_by = 10  # Límite ajustado a un máximo de 10 unidades por página
 
     def get_queryset(self):
         queryset = Bicicleta.objects.select_related(
@@ -97,6 +94,11 @@ class ListaBicicletasView(ListView):
         context["tipos"] = Bicicleta.TIPO_CHOICES
         context["estados"] = Bicicleta.ESTADO_CHOICES
         return context
+
+
+class InicioView(ListaBicicletasView):
+    """Página de inicio que hereda del catálogo para mostrar lista.html en la raíz"""
+    template_name = "bicicletas/lista.html"
 
 
 class DetalleBicicletaView(DetailView):

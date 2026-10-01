@@ -2,7 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
-MAX_PRECIO_CLP = 99_999_999
+MAX_PRECIO_CLP = 10_000_000
 TIPO_POR_CATEGORIA = {
     "Montaña": "MONTANA",
     "Ruta": "RUTA",

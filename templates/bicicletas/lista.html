@@ -1,14 +1,14 @@
 {% extends "base.html" %}
- 
+
 {% block title %}Bicicletas{% endblock %}
- 
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Catálogo de bicicletas</h1>
     <a class="btn btn-primary" href="{% url 'crear_bicicleta' %}">Agregar bicicleta</a>
 </div>
 
-<form method="get" class="row g-2 mb-3">
+<form method="get" action="{% url 'lista_bicicletas' %}" class="row g-2 mb-3">
     <div class="col-md-3">
         <label class="form-label" for="filtro-categoria">Categoría</label>
         <select class="form-select" id="filtro-categoria" name="categoria">
@@ -18,7 +18,7 @@
             {% endfor %}
         </select>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <label class="form-label" for="filtro-marca">Marca</label>
         <select class="form-select" id="filtro-marca" name="marca">
             <option value="">Todas</option>
@@ -36,16 +36,7 @@
             {% endfor %}
         </select>
     </div>
-    <div class="col-md-2">
-        <label class="form-label" for="filtro-tipo">Tipo</label>
-        <select class="form-select" id="filtro-tipo" name="tipo">
-            <option value="">Todos</option>
-            {% for valor, etiqueta in tipos %}
-                <option value="{{ valor }}" {% if request.GET.tipo == valor %}selected{% endif %}>{{ etiqueta }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <label class="form-label" for="filtro-aro">Aro</label>
         <select class="form-select" id="filtro-aro" name="aro">
             <option value="">Todos</option>
@@ -54,60 +45,166 @@
             {% endfor %}
         </select>
     </div>
-    <div class="col-12 d-flex gap-2">
+
+    <!-- Slider de Rango de Precios -->
+    <div class="col-md-6 mt-3">
+        <label class="form-label fw-bold" for="customRange">
+            Precio Máximo: <span id="precioSeleccionado" class="text-primary">
+                ${{ request.GET.precio_max|default:"10000000" }} CLP
+            </span>
+        </label>
+        <input type="range" class="form-range" min="0" max="10000000" step="100000" 
+               id="customRange" name="precio_max" 
+               value="{{ request.GET.precio_max|default:'10000000' }}">
+    </div>
+
+    <div class="col-12 d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Filtrar</button>
         <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-secondary">Limpiar</a>
     </div>
 </form>
- 
+
 <div class="table-responsive bg-white shadow-sm rounded">
-<table class="table table-striped table-hover mb-0">
+<table class="table table-striped table-hover align-middle mb-0">
     <thead class="table-dark">
         <tr>
             <th>Marca</th>
             <th>Modelo</th>
-            <th>Tipo</th>
+            <th>Categoría</th>
             <th>Aro</th>
             <th>Precio</th>
             <th>Stock</th>
-            <th>Acciones</th>
+            <th>Color</th>
+            <th>Información Comercial</th>
+            <th class="text-end">Acciones</th>
         </tr>
     </thead>
     <tbody>
         {% for bicicleta in bicicletas %}
         <tr>
-            <td>{{ bicicleta.marca }}</td>
-            <td>{{ bicicleta.modelo }}</td>
-            <td>{{ bicicleta.get_tipo_display }}</td>
+            <td>{{ bicicleta.modelo_rel.marca.nombre }}</td>
+            <td>{{ bicicleta.modelo_rel.nombre }}</td>
+            <td>{{ bicicleta.categoria_rel.nombre }}</td>
             <td>{{ bicicleta.aro }}</td>
-            <td>${{ bicicleta.precio }}</td>
+            
+            <!-- Precio con formato de puntos de miles chilenos -->
+            <td class="precio-clp" data-valor="{{ bicicleta.precio }}">${{ bicicleta.precio }}</td>
+            
             <td>{{ bicicleta.stock }}</td>
+            
+            <!-- Columna de Color -->
             <td>
+                <span class="badge bg-light text-dark border">{{ bicicleta.color }}</span>
+            </td>
+            
+            <!-- Indicadores comerciales intuitivos -->
+            <td>
+                {% if bicicleta.es_destacada %}
+                    <span class="badge bg-success mb-1 d-block text-start" style="width: fit-content;">⭐ Destacada en vitrina</span>
+                {% endif %}
+                {% if bicicleta.es_oferta %}
+                    <span class="badge bg-warning text-dark mb-1 d-block text-start" style="width: fit-content;">🏷️ En Oferta</span>
+                {% endif %}
+                {% if not bicicleta.es_destacada and not bicicleta.es_oferta %}
+                    <span class="text-muted small">Precio Regular</span>
+                {% endif %}
+            </td>
+
+            <td class="text-end">
                 <a class="btn btn-warning btn-sm" href="{% url 'editar_bicicleta' bicicleta.pk %}">Editar</a>
-                <a class="btn btn-danger btn-sm" href="{% url 'eliminar_bicicleta' bicicleta.pk %}">Eliminar</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'bicicleta_eliminar' bicicleta.pk %}">Eliminar</a>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="7" class="text-center py-4">No hay bicicletas registradas.</td>
+            <td colspan="9" class="text-center py-4">No hay bicicletas registradas.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 </div>
+
+<!-- Controles de Paginación (Siguiente / Anterior) -->
+{% if is_paginated %}
+<nav aria-label="Navegación de páginas" class="my-4">
+    <ul class="pagination justify-content-center">
+        <!-- Botón Anterior -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.marca %}&marca={{ request.GET.marca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.modelo %}&modelo={{ request.GET.modelo }}{% endif %}{% if request.GET.aro %}&aro={{ request.GET.aro }}{% endif %}{% if request.GET.precio_max %}&precio_max={{ request.GET.precio_max }}{% endif %}">Anterior</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Anterior</span>
+            </li>
+        {% endif %}
+
+        <!-- Indicador de página actual -->
+        <li class="page-item active" aria-current="page">
+            <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        <!-- Botón Siguiente -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.marca %}&marca={{ request.GET.marca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.modelo %}&modelo={{ request.GET.modelo }}{% endif %}{% if request.GET.aro %}&aro={{ request.GET.aro }}{% endif %}{% if request.GET.precio_max %}&precio_max={{ request.GET.precio_max }}{% endif %}">Siguiente</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Siguiente</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Lógica corregida de marcas y modelos dependientes
         const marca = document.getElementById('filtro-marca');
         const modelo = document.getElementById('filtro-modelo');
-        if (!marca || !modelo) return;
-
-        marca.addEventListener('change', function () {
-            Array.from(modelo.options).forEach(function (option) {
-                option.hidden = option.value && option.dataset.marca !== marca.value;
+        if (marca && modelo) {
+            marca.addEventListener('change', function () {
+                const marcaId = marca.value;
+                Array.from(modelo.options).forEach(function (option) {
+                    if (!option.value) {
+                        option.hidden = false;
+                        return;
+                    }
+                    option.hidden = marcaId !== "" && option.dataset.marca !== marcaId;
+                });
+                if (marcaId !== "" && modelo.selectedOptions[0]?.dataset.marca !== marcaId) {
+                    modelo.value = '';
+                }
             });
-            if (modelo.selectedOptions[0]?.dataset.marca !== marca.value) modelo.value = '';
+            marca.dispatchEvent(new Event('change'));
+        }
+
+        // Lógica para actualizar en tiempo real el texto del slider de precios con formato chileno
+        const customRange = document.getElementById('customRange');
+        const precioSeleccionado = document.getElementById('precioSeleccionado');
+
+        if (customRange && precioSeleccionado) {
+            const valorInicial = Number(customRange.value).toLocaleString('es-CL');
+            precioSeleccionado.textContent = `$${valorInicial} CLP`;
+
+            customRange.addEventListener('input', function (e) {
+                const valorFormateado = Number(e.target.value).toLocaleString('es-CL');
+                precioSeleccionado.textContent = `$${valorFormateado} CLP`;
+            });
+        }
+
+        // Formateador automático de precios en la tabla con puntos de miles
+        const celdasPrecio = document.querySelectorAll('.precio-clp');
+        celdasPrecio.forEach(celda => {
+            let valorBruto = celda.getAttribute('data-valor');
+            if (valorBruto) {
+                let numero = parseInt(valorBruto, 10);
+                if (!isNaN(numero)) {
+                    celda.textContent = '$' + numero.toLocaleString('es-CL');
+                }
+            }
         });
-        marca.dispatchEvent(new Event('change'));
     });
 </script>
 {% endblock %}
