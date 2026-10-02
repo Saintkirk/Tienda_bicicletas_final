@@ -2558,3 +2558,8 @@ INFO 2026-10-02 08:55:20,877 basehttp "GET /bicicletas/ HTTP/1.1" 200 75510
 INFO 2026-10-02 08:55:23,768 basehttp "GET /bicicletas/121/ HTTP/1.1" 200 19798
 INFO 2026-10-02 08:59:07,074 autoreload C:\Users\Aty\Desktop\tienda_bicicletas\config\settings.py changed, reloading.
 INFO 2026-10-02 08:59:14,441 autoreload Watching for file changes with StatReloader
+INFO 2026-10-02 09:04:41,407 basehttp "GET /bicicletas/121/ HTTP/1.1" 200 19812
+INFO 2026-10-02 09:04:44,183 basehttp "GET /bicicletas/ HTTP/1.1" 200 75510
+INFO 2026-10-02 09:04:49,037 basehttp "GET /bicicletas/ HTTP/1.1" 200 75510
+INFO 2026-10-02 09:07:16,931 basehttp "GET /bicicletas/ HTTP/1.1" 200 76934
+INFO 2026-10-02 09:08:59,977 basehttp "GET /bicicletas/ HTTP/1.1" 200 76034
