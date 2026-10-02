@@ -1,22 +1,24 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}Catálogo de Bicicletas | Veloce{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Catálogo de bicicletas</h2>
+    <h2 class="text-white fw-bold">Catálogo de bicicletas</h2>
     {% if user.is_authenticated %}
-        <a href="{% url 'crear_bicicleta' %}" class="btn btn-primary">
+        <a href="{% url 'crear_bicicleta' %}" class="btn btn-outline-light">
             <i class="bi bi-plus-circle"></i> Agregar bicicleta
         </a>
     {% endif %}
 </div>
 
-<form method="get" class="card shadow-sm mb-4">
+<!-- Formulario de filtros -->
+<form method="get" class="card shadow-sm mb-4 bg-dark text-white border-secondary">
     <div class="card-body">
-        <div class="row g-3">
+        <div class="row g-3 filter-row-1">
             <div class="col-md-3">
-                <label class="form-label">Categoría</label>
+                <label class="form-label brand-green-text">Categoría</label>
                 <select name="categoria" class="form-select">
                     <option value="">Todas</option>
                     {% for categoria in categorias %}
@@ -28,7 +30,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Marca</label>
+                <label class="form-label brand-green-text">Marca</label>
                 <select name="marca" class="form-select">
                     <option value="">Todas</option>
                     {% for marca in marcas %}
@@ -40,7 +42,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Modelo</label>
+                <label class="form-label brand-green-text">Modelo</label>
                 <select name="modelo" class="form-select">
                     <option value="">Todos</option>
                     {% for modelo in modelos %}
@@ -52,7 +54,7 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label">Aro</label>
+                <label class="form-label brand-green-text">Aro</label>
                 <select name="aro" class="form-select">
                     <option value="">Todos</option>
                     {% for aro in aros %}
@@ -63,63 +65,67 @@
                     {% endfor %}
                 </select>
             </div>
+        </div>
+
+        <div class="row g-3 mt-1 filter-row-2">
             <div class="col-md-4">
-                <label class="form-label">Precio Máximo: <span class="fw-bold text-primary" id="precioVal">{{ request.GET.precio_max|default:'10000000' }}</span></label>
-                <input type="range" name="precio_max" class="form-range"
+                <label class="form-label brand-green-text">Precio Máximo: <span class="fw-bold text-white" id="precioVal">{{ request.GET.precio_max|default:'10000000'|floatformat:0|intcomma }}</span></label>
+                <input type="range" name="precio_max" id="rangePrecio" class="form-range"
                        value="{{ request.GET.precio_max|default:'10000000' }}"
-                       min="0" max="10000000" step="50000"
-                       oninput="document.getElementById('precioVal').innerText = this.value">
+                       min="0" max="10000000" step="50000">
             </div>
             <div class="col-md-4">
-                <label class="form-label">Buscar</label>
+                <label class="form-label brand-green-text">Buscar</label>
                 <input type="text" name="q" class="form-control"
                        value="{{ request.GET.q|default:'' }}"
                        placeholder="Buscar...">
             </div>
-            <div class="col-md-4 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-secondary">Limpiar</a>
+            <div class="col-md-4 d-flex align-items-end gap-2 pb-1">
+                <!-- Botones Filtrar y Limpiar unificados al estilo base -->
+                <button type="submit" class="btn btn-outline-light">Filtrar</button>
+                <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-light">Limpiar</a>
             </div>
         </div>
     </div>
 </form>
 
-<div class="card shadow-sm">
+<!-- Tabla de resultados -->
+<div class="card shadow-sm bg-dark text-white border-secondary table-animate-container">
     <div class="table-responsive">
-        <table class="table table-hover mb-0">
-            <thead class="table-dark">
+        <table class="table table-dark table-hover mb-0 align-middle border-secondary">
+            <thead>
                 <tr>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Categoría</th>
-                    <th>Aro</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Color</th>
-                    <th>Info Comercial</th>
-                    <th>Acciones</th>
+                    <th class="brand-green-text">Marca</th>
+                    <th class="brand-green-text">Modelo</th>
+                    <th class="brand-green-text">Categoría</th>
+                    <th class="brand-green-text">Aro</th>
+                    <th class="brand-green-text">Precio</th>
+                    <th class="brand-green-text">Stock</th>
+                    <th class="brand-green-text">Color</th>
+                    <th class="brand-green-text">Info Comercial</th>
+                    <th class="brand-green-text">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for bicicleta in bicicletas %}
-                    <tr>
+                    <tr class="table-row-animate" style="animation-delay: {{ forloop.counter0|add:2|stringformat:'d' }}00ms;">
                         <td>{{ bicicleta.modelo_rel.marca.nombre }}</td>
                         <td>
                             <a href="{% url 'detalle_bicicleta' bicicleta.pk %}"
-                               class="text-decoration-none fw-semibold">
+                               class="text-decoration-none fw-semibold brand-green-text">
                                 {{ bicicleta.modelo_rel.nombre }}
                             </a>
                         </td>
                         <td>{{ bicicleta.categoria_rel.nombre|default:"-" }}</td>
                         <td>{{ bicicleta.aro }}</td>
-                        <td>${{ bicicleta.precio|floatformat:0 }}</td>
+                        <td>${{ bicicleta.precio|floatformat:0|intcomma }}</td>
                         <td>
                             {% if bicicleta.stock == 0 %}
                                 <span class="badge bg-danger">{{ bicicleta.stock }}</span>
                             {% elif bicicleta.stock <= bicicleta.stock_minimo %}
                                 <span class="badge bg-warning text-dark">{{ bicicleta.stock }}</span>
                             {% else %}
-                                <span class="badge bg-success">{{ bicicleta.stock }}</span>
+                                <span class="badge bg-success text-dark fw-bold">{{ bicicleta.stock }}</span>
                             {% endif %}
                         </td>
                         <td>{{ bicicleta.color }}</td>
@@ -135,20 +141,22 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'detalle_bicicleta' bicicleta.pk %}"
-                               class="btn btn-sm btn-outline-primary" title="Ver detalle">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'editar_bicicleta' bicicleta.pk %}"
-                                   class="btn btn-sm btn-outline-warning" title="Editar">
-                                    <i class="bi bi-pencil"></i>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'detalle_bicicleta' bicicleta.pk %}"
+                                   class="btn btn-sm btn-outline-success" title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{% url 'bicicleta_eliminar' bicicleta.pk %}"
-                                   class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            {% endif %}
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'editar_bicicleta' bicicleta.pk %}"
+                                       class="btn btn-sm btn-outline-warning" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'bicicleta_eliminar' bicicleta.pk %}"
+                                       class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                 {% empty %}
@@ -163,6 +171,7 @@
     </div>
 </div>
 
+<!-- Paginación estilizada -->
 {% if is_paginated %}
 <nav class="mt-4">
     <ul class="pagination justify-content-center">
@@ -177,8 +186,8 @@
             <li class="page-item disabled"><span class="page-link">Anterior</span></li>
         {% endif %}
 
-        <li class="page-Item disabled">
-            <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        <li class="page-item disabled">
+            <span class="page-link page-link-current">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
         </li>
 
         {% if page_obj.has_next %}
@@ -194,4 +203,75 @@
     </ul>
 </nav>
 {% endif %}
+
+<style>
+    @keyframes bikeSlideLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .filter-row-1 {
+        animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        opacity: 0;
+    }
+
+    .filter-row-2 {
+        animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        opacity: 0;
+    }
+
+    .table-row-animate {
+        opacity: 0;
+        animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .pagination .page-item .page-link {
+        background-color: #151819;
+        border-color: rgba(255, 255, 255, .09);
+        color: #f5f7f5;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .pagination .page-item .page-link:hover {
+        background-color: #252b2c;
+        color: #b5ff35;
+        border-color: #b5ff35;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        background-color: #111516;
+        border-color: rgba(255, 255, 255, .09);
+        color: #737c77;
+    }
+
+    .pagination .page-item.disabled .page-link-current {
+        background-color: rgba(181, 255, 53, 0.15);
+        border-color: #b5ff35;
+        color: #b5ff35 !important;
+        font-weight: 600;
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const rangeInput = document.getElementById("rangePrecio");
+    const precioValSpan = document.getElementById("precioVal");
+
+    if (rangeInput && precioValSpan) {
+        function actualizarFormatoPrecio() {
+            let valorNum = parseInt(rangeInput.value, 10);
+            precioValSpan.innerText = new Intl.NumberFormat("es-CL").format(valorNum);
+        }
+        
+        actualizarFormatoPrecio();
+        rangeInput.addEventListener("input", actualizarFormatoPrecio);
+    }
+});
+</script>
 {% endblock %}

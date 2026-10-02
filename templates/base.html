@@ -7,6 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
+        /* ========================================================================== */
+        /* 1. ESTANDARIZACIÓN DE COLORES Y ESTILOS GLOBALES (THEME / VARIABLES)       */
+        /* ========================================================================== */
         :root {
             color-scheme: dark;
             --velo-bg: #0b0d0e;
@@ -106,10 +109,6 @@
 
         .navbar .text-light { color: #d8dcda !important; }
 
-        .navbar .text-danger {
-            color: #ff8585 !important;
-        }
-
         .navbar .btn-outline-light {
             padding: .55rem 1.2rem;
             color: #f3f5f3;
@@ -152,10 +151,28 @@
             content: "";
         }
 
-        main h2, main h3, main h4, main h5, main h6 {
-            color: #f0f2f0;
+        main h2, main h3, main h4, main h5, main h6, .brand-green-text {
+            color: var(--velo-lime) !important;
             font-weight: 680;
             letter-spacing: -.025em;
+        }
+
+        /* ========================================================================== */
+        /* 2. SECCIÓN DE ANIMACIONES GLOBALES Y DESPLIEGUE EN CASCADA                */
+        /* ========================================================================== */
+        @keyframes bikeSlideLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .card, .table-responsive, main > form, .alert {
+            animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .card, .modal-content, .dropdown-menu, .list-group-item {
@@ -207,10 +224,13 @@
 
         .table > :not(caption) > * > * { padding: .9rem .85rem; }
 
+        /* ========================================================================== */
+        /* 3. ESTANDARIZACIÓN Y ESTILOS DE BOTONES (HOVER VERDE NEÓN GLOBAL)         */
+        /* ========================================================================== */
         .btn {
             border-radius: .48rem;
             font-weight: 650;
-            transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+            transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease;
         }
 
         .btn:hover {
@@ -218,37 +238,20 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
         }
 
-        .btn-primary {
+        .btn-light:hover, .btn-secondary:hover, .btn-dark:hover {
+            color: #11150c !important;
+            background-color: var(--velo-lime) !important;
+            border-color: var(--velo-lime) !important;
+            box-shadow: 0 8px 24px rgba(181, 255, 53, 0.25) !important;
+        }
+
+        .btn-primary, .btn-success {
             --bs-btn-color: #11150c;
             --bs-btn-bg: var(--velo-lime);
             --bs-btn-border-color: var(--velo-lime);
             --bs-btn-hover-color: #11150c;
             --bs-btn-hover-bg: #c5ff62;
             --bs-btn-hover-border-color: #c5ff62;
-            --bs-btn-active-color: #11150c;
-            --bs-btn-active-bg: var(--velo-lime-dark);
-            --bs-btn-active-border-color: var(--velo-lime-dark);
-            --bs-btn-disabled-color: #11150c;
-            --bs-btn-disabled-bg: var(--velo-lime);
-            --bs-btn-disabled-border-color: var(--velo-lime);
-            box-shadow: 0 5px 18px rgba(181, 255, 53, .12);
-        }
-
-        .btn-success {
-            --bs-btn-color: #11150c;
-            --bs-btn-bg: var(--velo-lime);
-            --bs-btn-border-color: var(--velo-lime);
-            --bs-btn-hover-color: #11150c;
-            --bs-btn-hover-bg: #c5ff62;
-            --bs-btn-hover-border-color: #c5ff62;
-        }
-
-        .btn-outline-primary {
-            --bs-btn-color: var(--velo-lime);
-            --bs-btn-border-color: rgba(181, 255, 53, .6);
-            --bs-btn-hover-color: #11150c;
-            --bs-btn-hover-bg: var(--velo-lime);
-            --bs-btn-hover-border-color: var(--velo-lime);
         }
 
         .form-control, .form-select {
@@ -281,12 +284,6 @@
         .alert-info { border-left: 3px solid #6bc8ff; }
         .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
 
-        .badge.text-bg-success, .bg-success { color: #11150c !important; background-color: var(--velo-lime) !important; }
-        .pagination { --bs-pagination-bg: #151819; --bs-pagination-color: #dfe4e1; --bs-pagination-border-color: var(--velo-border); --bs-pagination-hover-bg: #252b2c; --bs-pagination-hover-color: #fff; --bs-pagination-hover-border-color: rgba(181,255,53,.35); --bs-pagination-active-bg: var(--velo-lime); --bs-pagination-active-color: #11150c; --bs-pagination-active-border-color: var(--velo-lime); --bs-pagination-disabled-bg: #111516; }
-        .dropdown-item { color: #e9edea; }
-        .dropdown-item:hover, .dropdown-item:focus { color: #fff; background-color: #252b2c; }
-        hr { border-color: var(--velo-border); opacity: 1; }
-
         .footer {
             margin-top: auto;
             padding: 1.35rem 0;
@@ -302,39 +299,26 @@
             .navbar .nav-link.active::after { right: auto; width: 2rem; }
             main.container { width: min(100% - 1.5rem, 1480px); }
         }
-
-        @media (max-width: 575.98px) {
-            .navbar-brand { margin-right: .5rem; font-size: 1.15rem; }
-            main.container { width: min(100% - 1.25rem, 1480px); padding-top: 1.8rem; }
-            main h1, main .h1 { font-size: 2rem; }
-            .table-responsive { border: 1px solid var(--velo-border); border-radius: .6rem; }
-            .table > :not(caption) > * > * { padding: .72rem .65rem; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <!-- Marca principal que actúa como punto de retorno -->
             <a class="navbar-brand" href="{% url 'lista_bicicletas' %}">VELOCE</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir navegación">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="ms-auto"></div>
-                <!-- Opciones de usuario / sesión alineadas a la derecha -->
                 <ul class="navbar-nav align-items-lg-center">
                     {% if user.is_authenticated %}
                         <li class="nav-item me-lg-3 text-light py-2 py-lg-0">
                             <i class="bi bi-person-circle"></i> {{ user.username }}
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+                            <!-- Botón "Cerrar sesión" aplicando la misma clase del botón de Login -->
+                            <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Cerrar sesión</a>
                         </li>
                     {% else %}
                         <li class="nav-item">

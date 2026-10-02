@@ -7,9 +7,9 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-10">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">
+        <div class="card shadow-lg bg-dark text-white border-secondary form-animate-card">
+            <div class="card-header bg-dark text-white border-secondary">
+                <h4 class="mb-0 brand-green-text fw-bold">
                     {% if form.instance.pk %}
                         <i class="bi bi-pencil-square"></i> Editar Bicicleta
                     {% else %}
@@ -32,25 +32,30 @@
                         </div>
                     {% endif %}
 
-                    <div class="row g-3">
+                    <!-- Fila 1: Marca y Modelo -->
+                    <div class="row g-3 mb-3 form-row-1">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.marca.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.marca.label }}</label>
                             {{ form.marca }}
                             {% if form.marca.errors %}
                                 <div class="text-danger small">{{ form.marca.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.modelo_rel.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.modelo_rel.label }}</label>
                             {{ form.modelo_rel }}
                             {% if form.modelo_rel.errors %}
                                 <div class="text-danger small">{{ form.modelo_rel.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 2: Categoría y Aro -->
+                    <div class="row g-3 mb-3 form-row-2">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.categoria_rel.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.categoria_rel.label }}</label>
                             {{ form.categoria_rel }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 La categoría se define automáticamente según el modelo.
                             </small>
                             {% if form.categoria_rel.errors %}
@@ -58,19 +63,23 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.aro.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.aro.label }}</label>
                             {{ form.aro }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Se selecciona automáticamente según el modelo.
                             </small>
                             {% if form.aro.errors %}
                                 <div class="text-danger small">{{ form.aro.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 3: Precio y Precio Oferta -->
+                    <div class="row g-3 mb-3 form-row-3">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.precio.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.precio.label }}</label>
                             {{ form.precio }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Valor entre $1 y $10.000.000 CLP.
                             </small>
                             {% if form.precio.errors %}
@@ -78,19 +87,23 @@
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.precio_oferta.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.precio_oferta.label }}</label>
                             {{ form.precio_oferta }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Debe ser menor al precio normal.
                             </small>
                             {% if form.precio_oferta.errors %}
                                 <div class="text-danger small">{{ form.precio_oferta.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 4: Stock, Stock Mínimo y Color -->
+                    <div class="row g-3 mb-3 form-row-4">
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.stock.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.stock.label }}</label>
                             {{ form.stock }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Entre 0 y 10 unidades.
                             </small>
                             {% if form.stock.errors %}
@@ -98,9 +111,9 @@
                             {% endif %}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.stock_minimo.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.stock_minimo.label }}</label>
                             {{ form.stock_minimo }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Entre 1 y 10 unidades.
                             </small>
                             {% if form.stock_minimo.errors %}
@@ -108,41 +121,53 @@
                             {% endif %}
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">{{ form.color.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.color.label }}</label>
                             {{ form.color }}
                             {% if form.color.errors %}
                                 <div class="text-danger small">{{ form.color.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 5: Estado y Descripción -->
+                    <div class="row g-3 mb-3 form-row-5">
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.estado.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.estado.label }}</label>
                             {{ form.estado }}
                             {% if form.estado.errors %}
                                 <div class="text-danger small">{{ form.estado.errors }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">{{ form.descripcion.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.descripcion.label }}</label>
                             {{ form.descripcion }}
-                            <small class="form-text text-muted">
+                            <small class="form-text text-light opacity-75">
                                 Máximo 500 caracteres. Sin HTML.
-                                <span id="contador-desc">0</span> / 500
+                                <span id="contador-desc" class="brand-green-text fw-bold">0</span> / 500
                             </small>
                             {% if form.descripcion.errors %}
                                 <div class="text-danger small">{{ form.descripcion.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 6: Especificaciones -->
+                    <div class="row g-3 mb-3 form-row-6">
                         <div class="col-12">
-                            <label class="form-label">{{ form.especificaciones.label }}</label>
+                            <label class="form-label brand-green-text fw-semibold">{{ form.especificaciones.label }}</label>
                             {{ form.especificaciones }}
                             {% if form.especificaciones.errors %}
                                 <div class="text-danger small">{{ form.especificaciones.errors }}</div>
                             {% endif %}
                         </div>
+                    </div>
+
+                    <!-- Fila 7: Checkboxes de Destacada / Oferta -->
+                    <div class="row g-3 mb-4 form-row-7">
                         <div class="col-md-6">
                             <div class="form-check">
                                 {{ form.es_destacada }}
-                                <label class="form-check-label" for="{{ form.es_destacada.id_for_label }}">
+                                <label class="form-check-label text-light" for="{{ form.es_destacada.id_for_label }}">
                                     {{ form.es_destacada.label }}
                                 </label>
                             </div>
@@ -150,23 +175,18 @@
                         <div class="col-md-6">
                             <div class="form-check">
                                 {{ form.es_oferta }}
-                                <label class="form-check-label" for="{{ form.es_oferta.id_for_label }}">
+                                <label class="form-check-label text-light" for="{{ form.es_oferta.id_for_label }}">
                                     {{ form.es_oferta.label }}
                                 </label>
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary">
-                            Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            {% if form.instance.pk %}
-                                Guardar cambios
-                            {% else %}
-                                Guardar Bicicleta
-                            {% endif %}
+                    
+                    <!-- Botones de Acción -->
+                    <div class="col-12 mt-4 text-end form-row-8">
+                        <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-secondary me-2">Cancelar</a>
+                        <button type="submit" class="btn btn-success fw-bold px-4">
+                            {% if form.instance.pk %} Guardar cambios {% else %} Guardar Bicicleta {% endif %}
                         </button>
                     </div>
                 </form>
@@ -174,18 +194,177 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-    const descField = document.getElementById('{{ form.descripcion.id_for_label }}');
-    const contador = document.getElementById('contador-desc');
-    if (descField && contador) {
-        const actualizar = () => {
-            contador.textContent = descField.value.length;
-        };
-        descField.addEventListener('input', actualizar);
-        actualizar();
+<style>
+    .brand-green-text {
+        color: #a3e635 !important;
     }
+
+    @keyframes bikeSlideLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .form-animate-card {
+        animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .form-row-1 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; }
+    .form-row-2 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards; opacity: 0; }
+    .form-row-3 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; }
+    .form-row-4 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; opacity: 0; }
+    .form-row-5 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; opacity: 0; }
+    .form-row-6 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards; opacity: 0; }
+    .form-row-7 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards; opacity: 0; }
+    .form-row-8 { animation: bikeSlideLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards; opacity: 0; }
+
+    .form-control, .form-select, textarea {
+        background-color: #18181b !important;
+        border-color: #27272a !important;
+        color: #f4f4f5 !important;
+    }
+
+    .form-control:focus, .form-select:focus, textarea:focus {
+        border-color: #a3e635 !important;
+        box-shadow: 0 0 0 0.25rem rgba(163, 230, 53, 0.25) !important;
+        color: #f4f4f5 !important;
+        background-color: #18181b !important;
+    }
+
+    .btn-success {
+        background-color: #a3e635 !important;
+        border-color: #a3e635 !important;
+        color: #09090b !important;
+        transition: all 0.2s ease-in-out;
+    }
+    .btn-success:hover {
+        background-color: #bef264 !important;
+        border-color: #bef264 !important;
+        color: #09090b !important;
+        transform: translateY(-2px);
+    }
+    .btn-outline-secondary {
+        transition: all 0.2s ease-in-out;
+    }
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const inputPrecio = document.getElementById("id_precio");
+    const inputPrecioOferta = document.getElementById("id_precio_oferta");
+    const selectModelo = document.getElementById("id_modelo_rel");
+    const selectCategoria = document.getElementById("id_categoria_rel");
+    const selectAro = document.getElementById("id_aro");
+    const selectMarca = document.getElementById("id_marca");
+    const formulario = document.querySelector("form");
+    const txtDescripcion = document.getElementById("id_descripcion");
+    const lblContador = document.getElementById("contador-desc");
+
+    if (inputPrecio) {
+        inputPrecio.setAttribute("type", "text");
+        inputPrecio.setAttribute("inputmode", "numeric");
+        inputPrecio.setAttribute("maxlength", "8");
+        inputPrecio.removeAttribute("max");
+    }
+    if (inputPrecioOferta) {
+        inputPrecioOferta.setAttribute("type", "text");
+        inputPrecioOferta.setAttribute("inputmode", "numeric");
+        inputPrecioOferta.setAttribute("maxlength", "8");
+        inputPrecioOferta.removeAttribute("max");
+    }
+
+    function aplicarFormatoMiles(valor) {
+        let soloNumeros = String(valor).replace(/\D/g, "");
+        if (soloNumeros === "") return "";
+        let numeroEntero = parseInt(soloNumeros, 10);
+        if (numeroEntero > 10000000) {
+            soloNumeros = "10000000";
+        }
+        return new Intl.NumberFormat("es-CL").format(soloNumeros);
+    }
+
+    function alEscribirPrecio(evento) {
+        const input = evento.target;
+        let posicionCursor = input.selectionStart;
+        const longitudOriginal = input.value.length;
+        input.value = aplicarFormatoMiles(input.value);
+        const longitudNueva = input.value.length;
+        posicionCursor = posicionCursor + (longitudNueva - longitudOriginal);
+        input.setSelectionRange(posicionCursor, posicionCursor);
+    }
+
+    if (inputPrecio && inputPrecio.value) {
+        inputPrecio.value = aplicarFormatoMiles(inputPrecio.value);
+    }
+    if (inputPrecioOferta && inputPrecioOferta.value) {
+        inputPrecioOferta.value = aplicarFormatoMiles(inputPrecioOferta.value);
+    }
+
+    if (inputPrecio) inputPrecio.addEventListener("input", alEscribirPrecio);
+    if (inputPrecioOferta) inputPrecioOferta.addEventListener("input", alEscribirPrecio);
+
+    if (selectModelo) {
+        selectModelo.addEventListener("change", function() {
+            const valorModelo = selectModelo.value;
+            const textoSeleccionado = selectModelo.options[selectModelo.selectedIndex].text;
+
+            if (valorModelo && valorModelo !== "") {
+                const mapeoAro = textoSeleccionado.match(/Aro\s*(\d+)/i);
+                if (mapeoAro && mapeoAro[1] && selectAro) {
+                    selectAro.value = mapeoAro[1];
+                }
+
+                fetch(`/api/modelos/${valorModelo}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.categoria && selectCategoria) {
+                            selectCategoria.value = data.categoria;
+                        }
+                        if (data.marca && selectMarca) {
+                            selectMarca.value = data.marca;
+                        }
+                    })
+                    .catch(err => {
+                        if (selectMarca) {
+                            for (let i = 0; i < selectMarca.options.length; i++) {
+                                if (textoSeleccionado.toLowerCase().includes(selectMarca.options[i].text.toLowerCase())) {
+                                    selectMarca.value = selectMarca.options[i].value;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+            }
+        });
+    }
+
+    if (txtDescripcion && lblContador) {
+        function actualizarContador() {
+            lblContador.textContent = txtDescripcion.value.length;
+        }
+        actualizarContador();
+        txtDescripcion.addEventListener("input", actualizarContador);
+    }
+
+    if (formulario) {
+        formulario.addEventListener("submit", function() {
+            if (inputPrecio) {
+                inputPrecio.value = inputPrecio.value.replace(/\D/g, "");
+            }
+            if (inputPrecioOferta) {
+                inputPrecioOferta.value = inputPrecioOferta.value.replace(/\D/g, "");
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
