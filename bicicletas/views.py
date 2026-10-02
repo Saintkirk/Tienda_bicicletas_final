@@ -36,15 +36,24 @@ class EsSuperUsuarioOReadOnly(BasePermission):
 # --- VISTAS TRADICIONALES (HTML) ---
 
 class InicioView(TemplateView):
+    """
+    Vista para la página de bienvenida cinematográfica con video de fondo.
+    Mapea al archivo ubicado en 'templates/bicicletas/inicio.html'.
+    """
     template_name = "bicicletas/inicio.html"
 
     def dispatch(self, request, *args, **kwargs):
+        # Si el usuario ya está autenticado, lo salta automáticamente al catálogo
         if request.user.is_authenticated:
             return redirect("lista_bicicletas")
         return super().dispatch(request, *args, **kwargs)
 
 
 class ListaBicicletasView(LoginRequiredMixin, ListView):
+    """
+    Catálogo principal del inventario de bicicletas. Incluye paginación y 
+    múltiples filtros avanzados acumulativos.
+    """
     model = Bicicleta
     template_name = "bicicletas/lista.html"
     context_object_name = "bicicletas"
@@ -56,6 +65,7 @@ class ListaBicicletasView(LoginRequiredMixin, ListView):
             "categoria_rel", "modelo_rel__marca"
         ).all()
 
+        # Filtro de búsqueda global (por nombre de modelo, marca o descripción)
         busqueda = self.request.GET.get("q")
         if busqueda:
             queryset = queryset.filter(
@@ -64,6 +74,7 @@ class ListaBicicletasView(LoginRequiredMixin, ListView):
                 | Q(descripcion__icontains=busqueda)
             )
 
+        # Filtros por atributos del modelo
         tipo = self.request.GET.get("tipo")
         if tipo:
             queryset = queryset.filter(tipo=tipo)
@@ -88,6 +99,7 @@ class ListaBicicletasView(LoginRequiredMixin, ListView):
         if estado:
             queryset = queryset.filter(estado=estado)
 
+        # Filtros por rangos de precio
         precio_min = self.request.GET.get("precio_min")
         precio_max = self.request.GET.get("precio_max")
         if precio_min:
@@ -95,10 +107,12 @@ class ListaBicicletasView(LoginRequiredMixin, ListView):
         if precio_max:
             queryset = queryset.filter(precio__lte=precio_max)
 
+        # Filtro de disponibilidad inmediata
         solo_disponibles = self.request.GET.get("disponibles")
         if solo_disponibles:
             queryset = queryset.filter(stock__gt=0)
 
+        # Ordenamiento dinámico (por defecto muestra lo más reciente)
         orden = self.request.GET.get("orden", "-fecha_ingreso")
         queryset = queryset.order_by(orden)
         return queryset
@@ -128,6 +142,8 @@ class DetalleBicicletaView(LoginRequiredMixin, DetailView):
         filtros = Q(tipo=bicicleta.tipo)
         if bicicleta.modelo_rel_id:
             filtros |= Q(modelo_rel__marca_id=bicicleta.modelo_rel.marca_id)
+        
+        # Sugiere hasta 4 productos relacionados basados en tipo o marca común
         context["relacionados"] = (
             Bicicleta.objects.filter(filtros, stock__gt=0)
             .exclude(pk=bicicleta.pk)
@@ -175,7 +191,7 @@ class EliminarBicicletaView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-# --- VIEWSETS DE LA API REST ---
+# --- VIEWSETS DE LA API REST (Django REST Framework) ---
 
 class BicicletaViewSet(viewsets.ModelViewSet):
     queryset = Bicicleta.objects.select_related("categoria_rel", "modelo_rel__marca").all()

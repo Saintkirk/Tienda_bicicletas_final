@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}{{ bicicleta.modelo_rel.marca.nombre }} {{ bicicleta.modelo_rel.nombre }} | Veloce{% endblock %}
 
@@ -65,15 +66,15 @@
                 <div class="mb-3">
                     {% if bicicleta.es_oferta and bicicleta.precio_oferta %}
                         <div class="text-muted text-decoration-line-through">
-                            ${{ bicicleta.precio|floatformat:0 }}
+                            ${{ bicicleta.precio|floatformat:0|intcomma }}
                         </div>
                         <div class="h3 text-danger">
-                            ${{ bicicleta.precio_oferta|floatformat:0 }} CLP
+                            ${{ bicicleta.precio_oferta|floatformat:0|intcomma }} CLP
                         </div>
                         <small class="text-success">¡Precio de oferta!</small>
                     {% else %}
                         <div class="h3 text-primary">
-                            ${{ bicicleta.precio|floatformat:0 }} CLP
+                            ${{ bicicleta.precio|floatformat:0|intcomma }} CLP
                         </div>
                     {% endif %}
                 </div>
@@ -141,7 +142,7 @@
                             <h6 class="card-title">{{ rel.modelo_rel.marca.nombre }}</h6>
                             <p class="card-text small">{{ rel.modelo_rel.nombre }}</p>
                             <p class="text-muted small mb-1">Aro {{ rel.aro }}</p>
-                            <p class="h5 text-primary mb-0">${{ rel.precio|floatformat:0 }}</p>
+                            <p class="h5 text-primary mb-0">${{ rel.precio|floatformat:0|intcomma }}</p>
                         </div>
                         <div class="card-footer bg-transparent">
                             <a href="{% url 'detalle_bicicleta' rel.pk %}"

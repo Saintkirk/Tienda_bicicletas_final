@@ -155,37 +155,133 @@
                                 </label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary">
-                            Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            {% if form.instance.pk %}
-                                Guardar cambios
-                            {% else %}
-                                Guardar Bicicleta
-                            {% endif %}
-                        </button>
+                        
+                        <div class="col-12 mt-4 text-end">
+                            <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if form.instance.pk %} Guardar cambios {% else %} Guardar Bicicleta {% endif %}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
-    const descField = document.getElementById('{{ form.descripcion.id_for_label }}');
-    const contador = document.getElementById('contador-desc');
-    if (descField && contador) {
-        const actualizar = () => {
-            contador.textContent = descField.value.length;
-        };
-        descField.addEventListener('input', actualizar);
-        actualizar();
+document.addEventListener("DOMContentLoaded", function() {
+    const inputPrecio = document.getElementById("id_precio");
+    const inputPrecioOferta = document.getElementById("id_precio_oferta");
+    const selectModelo = document.getElementById("id_modelo_rel");
+    const selectCategoria = document.getElementById("id_categoria_rel");
+    const selectAro = document.getElementById("id_aro");
+    const selectMarca = document.getElementById("id_marca");
+    const formulario = document.querySelector("form");
+    const txtDescripcion = document.getElementById("id_descripcion");
+    const lblContador = document.getElementById("contador-desc");
+
+    // 1. Configuración de entradas de precio y eliminación del límite restrictivo max de HTML5
+    if (inputPrecio) {
+        inputPrecio.setAttribute("type", "text");
+        inputPrecio.setAttribute("inputmode", "numeric");
+        inputPrecio.setAttribute("maxlength", "8");
+        inputPrecio.removeAttribute("max");
     }
+    if (inputPrecioOferta) {
+        inputPrecioOferta.setAttribute("type", "text");
+        inputPrecioOferta.setAttribute("inputmode", "numeric");
+        inputPrecioOferta.setAttribute("maxlength", "8");
+        inputPrecioOferta.removeAttribute("max");
+    }
+
+    // 2. Formateador con tope estricto de $10.000.000 CLP
+    function aplicarFormatoMiles(valor) {
+        let soloNumeros = String(valor).replace(/\D/g, "");
+        if (soloNumeros === "") return "";
+        let numeroEntero = parseInt(soloNumeros, 10);
+        if (numeroEntero > 10000000) {
+            soloNumeros = "10000000";
+        }
+        return new Intl.NumberFormat("es-CL").format(soloNumeros);
+    }
+
+    function alEscribirPrecio(evento) {
+        const input = evento.target;
+        let posicionCursor = input.selectionStart;
+        const longitudOriginal = input.value.length;
+        input.value = aplicarFormatoMiles(input.value);
+        const longitudNueva = input.value.length;
+        posicionCursor = posicionCursor + (longitudNueva - longitudOriginal);
+        input.setSelectionRange(posicionCursor, posicionCursor);
+    }
+
+    if (inputPrecio && inputPrecio.value) {
+        inputPrecio.value = aplicarFormatoMiles(inputPrecio.value);
+    }
+    if (inputPrecioOferta && inputPrecioOferta.value) {
+        inputPrecioOferta.value = aplicarFormatoMiles(inputPrecioOferta.value);
+    }
+
+    if (inputPrecio) inputPrecio.addEventListener("input", alEscribirPrecio);
+    if (inputPrecioOferta) inputPrecioOferta.addEventListener("input", alEscribirPrecio);
+
+    // 3. Lógica dinámica automatizada para Categoría, Aro y Marca al elegir el modelo[cite: 4]
+    if (selectModelo) {
+        selectModelo.addEventListener("change", function() {
+            const valorModelo = selectModelo.value;
+            const textoSeleccionado = selectModelo.options[selectModelo.selectedIndex].text;
+
+            if (valorModelo && valorModelo !== "") {
+                const mapeoAro = textoSeleccionado.match(/Aro\s*(\d+)/i);
+                if (mapeoAro && mapeoAro[1] && selectAro) {
+                    selectAro.value = mapeoAro[1];
+                }
+
+                fetch(`/api/modelos/${valorModelo}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.categoria && selectCategoria) {
+                            selectCategoria.value = data.categoria;
+                        }
+                        if (data.marca && selectMarca) {
+                            selectMarca.value = data.marca;
+                        }
+                    })
+                    .catch(err => {
+                        if (selectMarca) {
+                            for (let i = 0; i < selectMarca.options.length; i++) {
+                                if (textoSeleccionado.toLowerCase().includes(selectMarca.options[i].text.toLowerCase())) {
+                                    selectMarca.value = selectMarca.options[i].value;
+                                    break;
+                                }
+                            }
+                        }
+                    });
+            }
+        });
+    }
+
+    // 4. Contador de la descripción
+    if (txtDescripcion && lblContador) {
+        function actualizarContador() {
+            lblContador.textContent = txtDescripcion.value.length;
+        }
+        actualizarContador();
+        txtDescripcion.addEventListener("input", actualizarContador);
+    }
+
+    // 5. Limpieza antes del envío para enviar solo números enteros a Django
+    if (formulario) {
+        formulario.addEventListener("submit", function() {
+            if (inputPrecio) {
+                inputPrecio.value = inputPrecio.value.replace(/\D/g, "");
+            }
+            if (inputPrecioOferta) {
+                inputPrecioOferta.value = inputPrecioOferta.value.replace(/\D/g, "");
+            }
+        });
+    }
+});
 </script>
 {% endblock %}
