@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo de Bicicletas | Veloce{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Catálogo de bicicletas</h2>
+    {% if user.is_authenticated %}
+        <a href="{% url 'crear_bicicleta' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Agregar bicicleta
+        </a>
+    {% endif %}
+</div>
+
+<form method="get" class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Categoría</label>
+                <select name="categoria" class="form-select">
+                    <option value="">Todas</option>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}"
+                            {% if request.GET.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Marca</label>
+                <select name="marca" class="form-select">
+                    <option value="">Todas</option>
+                    {% for marca in marcas %}
+                        <option value="{{ marca.id }}"
+                            {% if request.GET.marca == marca.id|stringformat:"s" %}selected{% endif %}>
+                            {{ marca.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Modelo</label>
+                <select name="modelo" class="form-select">
+                    <option value="">Todos</option>
+                    {% for modelo in modelos %}
+                        <option value="{{ modelo.id }}"
+                            {% if request.GET.modelo == modelo.id|stringformat:"s" %}selected{% endif %}>
+                            {{ modelo.marca.nombre }} - {{ modelo.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Aro</label>
+                <select name="aro" class="form-select">
+                    <option value="">Todos</option>
+                    {% for aro in aros %}
+                        <option value="{{ aro }}"
+                            {% if request.GET.aro == aro|stringformat:"s" %}selected{% endif %}>
+                            Aro {{ aro }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Precio Máximo: <span class="fw-bold text-primary" id="precioVal">{{ request.GET.precio_max|default:'10000000' }}</span></label>
+                <input type="range" name="precio_max" class="form-range"
+                       value="{{ request.GET.precio_max|default:'10000000' }}"
+                       min="0" max="10000000" step="50000"
+                       oninput="document.getElementById('precioVal').innerText = this.value">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="q" class="form-control"
+                       value="{{ request.GET.q|default:'' }}"
+                       placeholder="Buscar...">
+            </div>
+            <div class="col-md-4 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-secondary">Limpiar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Categoría</th>
+                    <th>Aro</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Color</th>
+                    <th>Info Comercial</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bicicleta in bicicletas %}
+                    <tr>
+                        <td>{{ bicicleta.modelo_rel.marca.nombre }}</td>
+                        <td>
+                            <a href="{% url 'detalle_bicicleta' bicicleta.pk %}"
+                               class="text-decoration-none fw-semibold">
+                                {{ bicicleta.modelo_rel.nombre }}
+                            </a>
+                        </td>
+                        <td>{{ bicicleta.categoria_rel.nombre|default:"-" }}</td>
+                        <td>{{ bicicleta.aro }}</td>
+                        <td>${{ bicicleta.precio|floatformat:0 }}</td>
+                        <td>
+                            {% if bicicleta.stock == 0 %}
+                                <span class="badge bg-danger">{{ bicicleta.stock }}</span>
+                            {% elif bicicleta.stock <= bicicleta.stock_minimo %}
+                                <span class="badge bg-warning text-dark">{{ bicicleta.stock }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ bicicleta.stock }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ bicicleta.color }}</td>
+                        <td>
+                            {% if bicicleta.es_destacada %}
+                                <span class="badge bg-warning text-dark">⭐ Destacada</span>
+                            {% endif %}
+                            {% if bicicleta.es_oferta %}
+                                <span class="badge bg-danger">🏷️ Oferta</span>
+                            {% endif %}
+                            {% if not bicicleta.es_destacada and not bicicleta.es_oferta %}
+                                <span class="badge bg-secondary">Regular</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'detalle_bicicleta' bicicleta.pk %}"
+                               class="btn btn-sm btn-outline-primary" title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'editar_bicicleta' bicicleta.pk %}"
+                                   class="btn btn-sm btn-outline-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="{% url 'bicicleta_eliminar' bicicleta.pk %}"
+                                   class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted">
+                            No hay bicicletas registradas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.previous_page_number }}{% if request.GET.marca %}&marca={{ request.GET.marca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.modelo %}&modelo={{ request.GET.modelo }}{% endif %}{% if request.GET.aro %}&aro={{ request.GET.aro }}{% endif %}{% if request.GET.precio_max %}&precio_max={{ request.GET.precio_max }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                    Anterior
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        {% endif %}
+
+        <li class="page-Item disabled">
+            <span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ page_obj.next_page_number }}{% if request.GET.marca %}&marca={{ request.GET.marca }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.modelo %}&modelo={{ request.GET.modelo }}{% endif %}{% if request.GET.aro %}&aro={{ request.GET.aro }}{% endif %}{% if request.GET.precio_max %}&precio_max={{ request.GET.precio_max }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                    Siguiente
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

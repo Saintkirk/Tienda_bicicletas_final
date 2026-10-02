@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar Bicicleta | Veloce{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">¿Estás seguro de que deseas eliminar esta bicicleta?</p>
+
+                <div class="alert alert-light">
+                    <h5 class="mb-2">
+                        {{ object.modelo_rel.marca.nombre }} - {{ object.modelo_rel.nombre }}
+                    </h5>
+                    <p class="mb-1"><strong>Aro:</strong> {{ object.aro }}</p>
+                    <p class="mb-1"><strong>Precio:</strong> ${{ object.precio|floatformat:0 }}</p>
+                    <p class="mb-0"><strong>Stock:</strong> {{ object.stock }} unidades</p>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Advertencia:</strong> Esta acción no se puede deshacer.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Sí, Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

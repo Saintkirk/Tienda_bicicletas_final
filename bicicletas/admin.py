@@ -1,39 +1,34 @@
-from django.contrib import admin
-from .models import Bicicleta, Categoria, Marca, Modelo
+from django.contrib.auth import views as auth_views
+from django.urls import path
+from . import views
 
-
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "activa")
-
-
-@admin.register(Marca)
-class MarcaAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "segmento")
-
-
-@admin.register(Modelo)
-class ModeloAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "marca")
-    list_filter = ("marca",)
-
-
-@admin.register(Bicicleta)
-class BicicletaAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "modelo_rel",
-        "tipo",
-        "aro",
-        "precio",
-        "stock",
-        "estado",
-        "es_oferta",
-    )
-    list_filter = ("tipo", "estado", "es_oferta", "es_destacada")
-    search_fields = (
-        "modelo_rel__nombre",
-        "modelo_rel__marca__nombre",
-        "descripcion",
-    )
-    list_editable = ("precio", "stock", "estado", "es_oferta")
+urlpatterns = [
+    path("", views.InicioView.as_view(), name="inicio"),
+    path("bicicletas/", views.ListaBicicletasView.as_view(), name="lista_bicicletas"),
+    path(
+        "bicicletas/<int:pk>/",
+        views.DetalleBicicletaView.as_view(),
+        name="detalle_bicicleta",
+    ),
+    path(
+        "login/",
+        auth_views.LoginView.as_view(template_name="bicicletas/login.html"),
+        name="login",
+    ),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path(
+        "bicicletas/crear/",
+        views.CrearBicicletaView.as_view(),
+        name="crear_bicicleta",
+    ),
+    path(
+        "bicicletas/<int:pk>/editar/",
+        views.EditarBicicletaView.as_view(),
+        name="editar_bicicleta",
+    ),
+    path(
+        "bicicletas/<int:pk>/eliminar/",
+        views.EliminarBicicletaView.as_view(),
+        name="bicicleta_eliminar",
+    ),
+]

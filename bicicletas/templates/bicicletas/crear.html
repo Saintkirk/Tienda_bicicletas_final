@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if form.instance.pk %}Editar Bicicleta{% else %}Nueva Bicicleta{% endif %} | Veloce
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">
+                    {% if form.instance.pk %}
+                        <i class="bi bi-pencil-square"></i> Editar Bicicleta
+                    {% else %}
+                        <i class="bi bi-plus-circle"></i> Registrar Nueva Bicicleta
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>¡Atención!</strong> Corrige los siguientes errores:
+                            <ul class="mb-0 mt-2">
+                                {% for field, errors in form.errors.items %}
+                                    <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.marca.label }}</label>
+                            {{ form.marca }}
+                            {% if form.marca.errors %}
+                                <div class="text-danger small">{{ form.marca.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.modelo_rel.label }}</label>
+                            {{ form.modelo_rel }}
+                            {% if form.modelo_rel.errors %}
+                                <div class="text-danger small">{{ form.modelo_rel.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.categoria_rel.label }}</label>
+                            {{ form.categoria_rel }}
+                            <small class="form-text text-muted">
+                                La categoría se define automáticamente según el modelo.
+                            </small>
+                            {% if form.categoria_rel.errors %}
+                                <div class="text-danger small">{{ form.categoria_rel.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.aro.label }}</label>
+                            {{ form.aro }}
+                            <small class="form-text text-muted">
+                                Se selecciona automáticamente según el modelo.
+                            </small>
+                            {% if form.aro.errors %}
+                                <div class="text-danger small">{{ form.aro.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.precio.label }}</label>
+                            {{ form.precio }}
+                            <small class="form-text text-muted">
+                                Valor entre $1 y $10.000.000 CLP.
+                            </small>
+                            {% if form.precio.errors %}
+                                <div class="text-danger small">{{ form.precio.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.precio_oferta.label }}</label>
+                            {{ form.precio_oferta }}
+                            <small class="form-text text-muted">
+                                Debe ser menor al precio normal.
+                            </small>
+                            {% if form.precio_oferta.errors %}
+                                <div class="text-danger small">{{ form.precio_oferta.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.stock.label }}</label>
+                            {{ form.stock }}
+                            <small class="form-text text-muted">
+                                Entre 0 y 10 unidades.
+                            </small>
+                            {% if form.stock.errors %}
+                                <div class="text-danger small">{{ form.stock.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.stock_minimo.label }}</label>
+                            {{ form.stock_minimo }}
+                            <small class="form-text text-muted">
+                                Entre 1 y 10 unidades.
+                            </small>
+                            {% if form.stock_minimo.errors %}
+                                <div class="text-danger small">{{ form.stock_minimo.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">{{ form.color.label }}</label>
+                            {{ form.color }}
+                            {% if form.color.errors %}
+                                <div class="text-danger small">{{ form.color.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.estado.label }}</label>
+                            {{ form.estado }}
+                            {% if form.estado.errors %}
+                                <div class="text-danger small">{{ form.estado.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.descripcion.label }}</label>
+                            {{ form.descripcion }}
+                            <small class="form-text text-muted">
+                                Máximo 500 caracteres. Sin HTML.
+                                <span id="contador-desc">0</span> / 500
+                            </small>
+                            {% if form.descripcion.errors %}
+                                <div class="text-danger small">{{ form.descripcion.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">{{ form.especificaciones.label }}</label>
+                            {{ form.especificaciones }}
+                            {% if form.especificaciones.errors %}
+                                <div class="text-danger small">{{ form.especificaciones.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                {{ form.es_destacada }}
+                                <label class="form-check-label" for="{{ form.es_destacada.id_for_label }}">
+                                    {{ form.es_destacada.label }}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                {{ form.es_oferta }}
+                                <label class="form-check-label" for="{{ form.es_oferta.id_for_label }}">
+                                    {{ form.es_oferta.label }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {% if form.instance.pk %}
+                                Guardar cambios
+                            {% else %}
+                                Guardar Bicicleta
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const descField = document.getElementById('{{ form.descripcion.id_for_label }}');
+    const contador = document.getElementById('contador-desc');
+    if (descField && contador) {
+        const actualizar = () => {
+            contador.textContent = descField.value.length;
+        };
+        descField.addEventListener('input', actualizar);
+        actualizar();
+    }
+</script>
+{% endblock %}

@@ -3,8 +3,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # Incluimos las URLs de la app bicicletas bajo el prefijo 'bicicletas/'
-    path("bicicletas/", include("bicicletas.urls")),
-    # Redirigimos la raíz principal también hacia las bicicletas (opcional pero muy útil)
+    # Incluimos las URLs de la app bicicletas en la raíz para que maneje '/' y '/bicicletas/' correctamente
     path("", include("bicicletas.urls")),
 ]
