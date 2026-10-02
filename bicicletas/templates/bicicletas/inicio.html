@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido | VeloObsidian</title>
+    <title>Bienvenido | Veloce</title>
     <style>
-        /* Reseteo del sistema y atmósfera oscura */
         html, body {
             margin: 0;
             padding: 0;
@@ -24,7 +23,6 @@
             overflow: hidden;
         }
 
-        /* Renderizado nativo por GPU para el video de fondo */
         .video-bg {
             position: absolute;
             top: 0;
@@ -36,7 +34,6 @@
             pointer-events: none;
         }
 
-        /* Máscara de contraste: protege el texto a la izquierda, resalta la bici a la derecha */
         .video-overlay {
             position: absolute;
             top: 0;
@@ -50,7 +47,6 @@
             z-index: 2;
         }
 
-        /* Contenedor alineado al espacio negativo izquierdo de tu toma */
         .hero-content {
             position: relative;
             z-index: 3;
@@ -65,7 +61,6 @@
             box-sizing: border-box;
         }
 
-        /* Nombre de la marca con degradado premium */
         .hero-content h1 {
             font-size: 3.8rem;
             font-weight: 900;
@@ -80,7 +75,7 @@
         .hero-content h2 {
             font-size: 1.25rem;
             font-weight: 500;
-            color: #a3e635; /* El verde neón exacto del acento de la imagen */
+            color: #a3e635;
             margin: 0 0 20px 0;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -93,11 +88,10 @@
             margin: 0 0 35px 0;
         }
 
-        /* Cuadro informativo de acceso restringido */
         .restriction-badge {
             background: rgba(24, 24, 27, 0.6);
             border: 1px solid rgba(63, 63, 70, 0.4);
-            border-left: 3px solid #ef4444; /* Alerta en color rojo */
+            border-left: 3px solid #ef4444;
             padding: 12px 16px;
             border-radius: 4px;
             font-size: 0.9rem;
@@ -105,7 +99,6 @@
             margin-bottom: 30px;
         }
 
-        /* Botón de acción principal para Login */
         .cta-button {
             display: inline-block;
             background-color: #ffffff;
@@ -124,7 +117,7 @@
         }
 
         .cta-button:hover {
-            background-color: #a3e635; /* Cambia al verde neón en hover */
+            background-color: #a3e635;
             transform: translateY(-3px);
             box-shadow: 0 12px 24px rgba(163, 230, 53, 0.3);
         }
@@ -133,17 +126,14 @@
 <body>
 
     <section class="hero-section">
-        <!-- El tag static apunta directo al video almacenado -->
         <video class="video-bg" autoplay loop muted playsinline>
             <source src="{% static 'videos/velo-bg-motion.mp4' %}" type="video/mp4">
         </video>
         
-        <!-- Capa de sombra para resguardo de contraste -->
         <div class="video-overlay"></div>
 
-        <!-- Contenido e interacciones -->
         <main class="hero-content">
-            <h1>VeloObsidian</h1>
+            <h1>Veloce</h1>
             <h2>Sistema de Gestión Premium</h2>
             
             <p>Calidad, ingeniería de precisión y control absoluto sobre tu inventario de bicicletas de alta gama.</p>
@@ -152,7 +142,6 @@
                 <strong>Acceso restringido:</strong> Debes iniciar sesión para consultar el catálogo, registrar o modificar unidades del inventario.
             </div>
 
-            <!-- Redirecciona al login utilizando tu ruta nombrada en settings.py -->
             <a href="{% url 'login' %}" class="cta-button">Iniciar Sesión</a>
         </main>
     </section>

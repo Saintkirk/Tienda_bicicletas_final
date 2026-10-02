@@ -2563,3 +2563,15 @@ INFO 2026-10-02 09:04:44,183 basehttp "GET /bicicletas/ HTTP/1.1" 200 75510
 INFO 2026-10-02 09:04:49,037 basehttp "GET /bicicletas/ HTTP/1.1" 200 75510
 INFO 2026-10-02 09:07:16,931 basehttp "GET /bicicletas/ HTTP/1.1" 200 76934
 INFO 2026-10-02 09:08:59,977 basehttp "GET /bicicletas/ HTTP/1.1" 200 76034
+INFO 2026-10-02 09:13:15,876 basehttp "GET /bicicletas/ HTTP/1.1" 200 76034
+INFO 2026-10-02 09:13:17,508 basehttp "GET /logout/ HTTP/1.1" 302 0
+INFO 2026-10-02 09:13:17,570 basehttp "GET / HTTP/1.1" 200 5097
+WARNING 2026-10-02 09:13:17,706 basehttp "GET /static/videos/velo-bg-motion.mp4 HTTP/1.1" 404 1935
+INFO 2026-10-02 09:25:46,499 basehttp "GET /static/videos/velo-bg-motion.mp4 HTTP/1.1" 200 735885
+INFO 2026-10-02 09:25:56,383 basehttp "GET /login/ HTTP/1.1" 200 14359
+INFO 2026-10-02 09:26:00,973 basehttp "GET /login/ HTTP/1.1" 200 14359
+INFO 2026-10-02 09:26:04,405 basehttp "POST /login/ HTTP/1.1" 302 0
+INFO 2026-10-02 09:26:04,504 basehttp "GET /bicicletas/ HTTP/1.1" 200 76034
+INFO 2026-10-02 09:26:08,458 basehttp "GET /logout/ HTTP/1.1" 302 0
+INFO 2026-10-02 09:26:08,467 basehttp "GET / HTTP/1.1" 200 5097
+INFO 2026-10-02 09:26:10,243 basehttp "GET /login/ HTTP/1.1" 200 14359
