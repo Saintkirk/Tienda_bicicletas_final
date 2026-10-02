@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}{{ bicicleta.modelo_rel.marca.nombre }} {{ bicicleta.modelo_rel.nombre }} | Veloce{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'lista_bicicletas' %}" class="btn btn-outline-secondary btn-sm">
+        ← Volver al catálogo
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+            {{ bicicleta.modelo_rel.marca.nombre }}
+            {{ bicicleta.modelo_rel.nombre }}
+        </h3>
+        <div>
+            {% if bicicleta.es_destacada %}
+                <span class="badge bg-warning text-dark">⭐ Destacada</span>
+            {% endif %}
+            {% if bicicleta.es_oferta %}
+                <span class="badge bg-danger">🏷️ Oferta</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <h5 class="border-bottom pb-2">Información General</h5>
+                <table class="table table-borderless">
+                    <tr>
+                        <th style="width: 40%;">Categoría:</th>
+                        <td>{{ bicicleta.categoria_rel.nombre|default:"Sin categoría" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo:</th>
+                        <td>{{ bicicleta.get_tipo_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Aro:</th>
+                        <td>{{ bicicleta.aro }}</td>
+                    </tr>
+                    <tr>
+                        <th>Color:</th>
+                        <td>{{ bicicleta.color }}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado:</th>
+                        <td>
+                            {% if bicicleta.estado == "DISPONIBLE" %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% elif bicicleta.estado == "AGOTADO" %}
+                                <span class="badge bg-danger">Agotado</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Reservado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <h5 class="border-bottom pb-2">Precio y Stock</h5>
+                <div class="mb-3">
+                    {% if bicicleta.es_oferta and bicicleta.precio_oferta %}
+                        <div class="text-muted text-decoration-line-through">
+                            ${{ bicicleta.precio|floatformat:0 }}
+                        </div>
+                        <div class="h3 text-danger">
+                            ${{ bicicleta.precio_oferta|floatformat:0 }} CLP
+                        </div>
+                        <small class="text-success">¡Precio de oferta!</small>
+                    {% else %}
+                        <div class="h3 text-primary">
+                            ${{ bicicleta.precio|floatformat:0 }} CLP
+                        </div>
+                    {% endif %}
+                </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Stock disponible:</th>
+                        <td>
+                            {% if bicicleta.stock == 0 %}
+                                <span class="text-danger fw-bold">{{ bicicleta.stock }} unidades</span>
+                            {% else %}
+                                {{ bicicleta.stock }} unidades
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Stock mínimo:</th>
+                        <td>{{ bicicleta.stock_minimo }} unidades</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de ingreso:</th>
+                        <td>{{ bicicleta.fecha_ingreso|date:"d/m/Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        {% if bicicleta.descripcion %}
+            <div class="mb-4">
+                <h5 class="border-bottom pb-2">Descripción</h5>
+                <p>{{ bicicleta.descripcion|linebreaks }}</p>
+            </div>
+        {% endif %}
+
+        {% if bicicleta.especificaciones %}
+            <div class="mb-4">
+                <h5 class="border-bottom pb-2">Especificaciones técnicas</h5>
+                <p>{{ bicicleta.especificaciones|linebreaks }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="card-footer d-flex justify-content-between">
+        <a href="{% url 'lista_bicicletas' %}" class="btn btn-secondary">
+            ← Volver
+        </a>
+        <div>
+            <a href="{% url 'editar_bicicleta' bicicleta.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="{% url 'bicicleta_eliminar' bicicleta.pk %}" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Eliminar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h4>Bicicletas relacionadas</h4>
+    {% if relacionados %}
+        <div class="row">
+            {% for rel in relacionados %}
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ rel.modelo_rel.marca.nombre }}</h6>
+                            <p class="card-text small">{{ rel.modelo_rel.nombre }}</p>
+                            <p class="text-muted small mb-1">Aro {{ rel.aro }}</p>
+                            <p class="h5 text-primary mb-0">${{ rel.precio|floatformat:0 }}</p>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'detalle_bicicleta' rel.pk %}"
+                               class="btn btn-sm btn-outline-primary w-100">Ver detalle</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No hay bicicletas relacionadas disponibles.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

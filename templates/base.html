@@ -4,239 +4,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Gestión de Bicicletas | Veloce{% endblock %}</title>
-    
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --bg-body: #090d16;      /* Fondo general más profundo */
-            --bg-card: #151f32;      /* Tarjetas con mejor contraste */
-            --text-main: #ffffff;    /* Blanco puro para máxima lectura */
-            --text-muted: #cbd5e1;   /* Gris claro mejorado */
-            --accent-gold: #f3d06c;   /* Dorado más brillante y visible */
-            --accent-gold-hover: #d4af37;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            
-            --font-heading: 'Playfair Display', serif;
-            --font-body: 'Inter', sans-serif;
-            
-            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.7);
-            --border-radius: 12px;
+            color-scheme: dark;
+            --velo-bg: #0b0d0e;
+            --velo-panel: #151819;
+            --velo-panel-soft: #1d2223;
+            --velo-border: rgba(255, 255, 255, .09);
+            --velo-text: #f5f7f5;
+            --velo-muted: #a3aaa7;
+            --velo-lime: #b5ff35;
+            --velo-lime-dark: #9de51c;
+            --bs-body-bg: var(--velo-bg);
+            --bs-body-color: var(--velo-text);
+            --bs-border-color: var(--velo-border);
+            --bs-primary: var(--velo-lime);
+            --bs-primary-rgb: 181, 255, 53;
+            --bs-link-color: var(--velo-lime);
+            --bs-link-hover-color: #d0ff80;
+            --bs-card-bg: var(--velo-panel);
         }
 
+        * { box-sizing: border-box; }
+
+        html { min-height: 100%; background: var(--velo-bg); }
+
         body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: var(--font-body);
-            line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: var(--velo-text);
+            background:
+                radial-gradient(ellipse at 82% 6%, rgba(113, 130, 119, .12), transparent 31rem),
+                radial-gradient(ellipse at 12% 72%, rgba(181, 255, 53, .035), transparent 28rem),
+                linear-gradient(145deg, #101314 0%, #090b0c 62%, #111515 100%);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            letter-spacing: .005em;
         }
 
-        h1, h2, h3, h4, h5, h6, .navbar-brand {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
+        a { transition: color .2s ease, background-color .2s ease, border-color .2s ease, transform .2s ease; }
 
-        a { text-decoration: none; transition: all 0.3s ease; }
-        a:hover { color: var(--accent-gold); }
-
-        /* Navbar */
         .navbar {
-            background-color: rgba(9, 13, 22, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 1rem 0;
+            min-height: 72px;
+            padding: .75rem 0;
+            background: rgba(10, 12, 13, .92) !important;
+            border-bottom: 1px solid var(--velo-border);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, .18);
+            backdrop-filter: blur(16px);
         }
+
+        .navbar .container { gap: 1.25rem; }
+
         .navbar-brand {
-            font-size: 1.5rem;
-            color: var(--accent-gold) !important;
+            display: inline-flex;
+            align-items: center;
+            gap: .8rem;
+            margin-right: 2.5rem;
+            color: #f7f8f7 !important;
+            font-size: 1.38rem;
+            font-weight: 750;
+            letter-spacing: .19em;
         }
-        .nav-link {
-            color: var(--text-muted) !important;
-            font-weight: 500;
-            margin: 0 0.5rem;
+
+        .navbar-brand::before {
+            content: "//";
+            color: var(--velo-lime);
+            font-size: 1.28rem;
+            font-weight: 900;
+            letter-spacing: -.16em;
+            transform: skewX(-15deg);
+        }
+
+        .navbar-nav { gap: .4rem; }
+
+        .navbar .nav-link {
             position: relative;
+            padding: .75rem 1rem !important;
+            color: #aeb4b1 !important;
+            font-size: .91rem;
+            font-weight: 550;
         }
-        .nav-link:hover, .nav-link.active {
-            color: var(--text-main) !important;
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus,
+        .navbar .nav-link.active {
+            color: #fff !important;
         }
-        .nav-link::after {
-            content: '';
+
+        .navbar .nav-link.active::after {
             position: absolute;
-            width: 0;
+            right: 1rem;
+            bottom: .25rem;
+            left: 1rem;
             height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--accent-gold);
-            transition: width 0.3s;
-        }
-        .nav-link:hover::after { width: 100%; }
-
-        /* Botones */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-hover));
-            border: none;
-            color: #0f172a;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(243, 208, 108, 0.2);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, var(--accent-gold-hover), var(--accent-gold));
-            color: #000;
+            background: var(--velo-lime);
+            box-shadow: 0 0 12px rgba(181, 255, 53, .35);
+            content: "";
         }
 
-        /* Tarjetas */
+        .navbar .text-light { color: #d8dcda !important; }
+
+        .navbar .text-danger {
+            color: #ff8585 !important;
+        }
+
+        .navbar .btn-outline-light {
+            padding: .55rem 1.2rem;
+            color: #f3f5f3;
+            border-color: rgba(181, 255, 53, .7);
+            border-radius: .45rem;
+            background: rgba(255, 255, 255, .015);
+        }
+
+        .navbar .btn-outline-light:hover {
+            color: #11140d;
+            border-color: var(--velo-lime);
+            background: var(--velo-lime);
+        }
+
+        .navbar-toggler { border-color: var(--velo-border); }
+        .navbar-toggler:focus { box-shadow: 0 0 0 .2rem rgba(181, 255, 53, .18); }
+
+        main.container {
+            width: min(100% - 2rem, 1480px);
+            max-width: 1480px;
+            flex: 1;
+            padding: clamp(1.5rem, 4vw, 3.5rem) 0 3rem;
+        }
+
+        main h1, main .h1 {
+            margin-bottom: 1.8rem;
+            color: #f6f8f6;
+            font-size: clamp(2rem, 4vw, 3.15rem);
+            font-weight: 760;
+            letter-spacing: -.045em;
+        }
+
+        main h1::after {
+            display: block;
+            width: 38px;
+            height: 3px;
+            margin-top: .8rem;
+            background: var(--velo-lime);
+            box-shadow: 0 0 18px rgba(181, 255, 53, .3);
+            content: "";
+        }
+
+        main h2, main h3, main h4, main h5, main h6 {
+            color: #f0f2f0;
+            font-weight: 680;
+            letter-spacing: -.025em;
+        }
+
+        .card, .modal-content, .dropdown-menu, .list-group-item {
+            color: var(--velo-text);
+            border-color: var(--velo-border);
+            background-color: rgba(21, 24, 25, .94);
+        }
+
         .card {
-            background-color: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-soft);
-            margin-bottom: 2rem;
-        }
-        .card-header {
-            background-color: rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            font-family: var(--font-heading);
-            font-size: 1.25rem;
-            color: var(--accent-gold);
-        }
-        .card-body { padding: 2rem; }
-
-        /* Formularios con contraste mejorado */
-        .form-control, .form-select {
-            background-color: #1e293b !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            color: var(--text-main) !important;
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-        }
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-        .form-control:focus, .form-select:focus {
-            background-color: #1e293b !important;
-            border-color: var(--accent-gold) !important;
-            color: var(--text-main) !important;
-            box-shadow: 0 0 0 0.25rem rgba(243, 208, 108, 0.25) !important;
-        }
-        .form-label {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        .form-text {
-            color: #94a3b8 !important; 
-            font-size: 0.85rem;
+            border-radius: .8rem;
+            transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, .16);
         }
 
-        /* Tablas */
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(181, 255, 53, .22);
+            box-shadow: 0 20px 48px rgba(0, 0, 0, .27), 0 0 0 1px rgba(181, 255, 53, .035);
+        }
+
+        .card-header, .card-footer {
+            color: #e9edea;
+            border-color: var(--velo-border);
+            background: rgba(255, 255, 255, .025);
+        }
+
         .table {
-            color: var(--text-main);
+            --bs-table-color: #e7eae8;
+            --bs-table-bg: transparent;
+            --bs-table-border-color: var(--velo-border);
+            --bs-table-striped-color: #e7eae8;
+            --bs-table-striped-bg: rgba(255, 255, 255, .025);
+            --bs-table-hover-color: #fff;
+            --bs-table-hover-bg: rgba(181, 255, 53, .045);
             margin-bottom: 0;
-        }
-        .table thead th {
-            background-color: rgba(0,0,0,0.3);
-            color: var(--accent-gold);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            border-bottom: 2px solid var(--accent-gold);
-            padding: 1rem;
-        }
-        .table tbody td {
-            padding: 1rem;
             vertical-align: middle;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .table-hover tbody tr:hover {
-            background-color: rgba(255,255,255,0.05);
-            color: var(--text-main);
         }
 
-        /* Footer */
-        footer {
-            margin-top: auto;
-            background-color: rgba(0,0,0,0.3);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 2rem 0;
-            color: var(--text-muted);
+        .table thead th {
+            padding-top: .9rem;
+            padding-bottom: .9rem;
+            color: #aeb5b1;
+            background: rgba(255, 255, 255, .035);
+            font-size: .76rem;
+            font-weight: 650;
+            letter-spacing: .09em;
+            text-transform: uppercase;
         }
 
-        .text-gold { color: var(--accent-gold) !important; }
-        
+        .table > :not(caption) > * > * { padding: .9rem .85rem; }
+
+        .btn {
+            border-radius: .48rem;
+            font-weight: 650;
+            transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .22);
+        }
+
+        .btn-primary {
+            --bs-btn-color: #11150c;
+            --bs-btn-bg: var(--velo-lime);
+            --bs-btn-border-color: var(--velo-lime);
+            --bs-btn-hover-color: #11150c;
+            --bs-btn-hover-bg: #c5ff62;
+            --bs-btn-hover-border-color: #c5ff62;
+            --bs-btn-active-color: #11150c;
+            --bs-btn-active-bg: var(--velo-lime-dark);
+            --bs-btn-active-border-color: var(--velo-lime-dark);
+            --bs-btn-disabled-color: #11150c;
+            --bs-btn-disabled-bg: var(--velo-lime);
+            --bs-btn-disabled-border-color: var(--velo-lime);
+            box-shadow: 0 5px 18px rgba(181, 255, 53, .12);
+        }
+
+        .btn-success {
+            --bs-btn-color: #11150c;
+            --bs-btn-bg: var(--velo-lime);
+            --bs-btn-border-color: var(--velo-lime);
+            --bs-btn-hover-color: #11150c;
+            --bs-btn-hover-bg: #c5ff62;
+            --bs-btn-hover-border-color: #c5ff62;
+        }
+
+        .btn-outline-primary {
+            --bs-btn-color: var(--velo-lime);
+            --bs-btn-border-color: rgba(181, 255, 53, .6);
+            --bs-btn-hover-color: #11150c;
+            --bs-btn-hover-bg: var(--velo-lime);
+            --bs-btn-hover-border-color: var(--velo-lime);
+        }
+
+        .form-control, .form-select {
+            min-height: 44px;
+            color: #f2f4f2;
+            border-color: rgba(255, 255, 255, .12);
+            background-color: #111516;
+        }
+
+        .form-control:focus, .form-select:focus {
+            color: #fff;
+            border-color: rgba(181, 255, 53, .65);
+            background-color: #111516;
+            box-shadow: 0 0 0 .2rem rgba(181, 255, 53, .12);
+        }
+
+        .form-control::placeholder { color: #808985; }
+        .form-label, label { color: #dce1de; font-weight: 550; }
+        .form-text, .text-muted, .text-secondary { color: var(--velo-muted) !important; }
+        .form-select option { color: #f2f4f2; background: #151819; }
+
         .alert {
-            border: none;
-            border-radius: 8px;
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border-left: 4px solid var(--accent-gold);
+            color: #eef2ef;
+            border-color: var(--velo-border);
+            background-color: #171b1c;
         }
-        .btn-close-white { filter: invert(1); }
-    </style>
+        .alert-success { border-left: 3px solid var(--velo-lime); }
+        .alert-danger { border-left: 3px solid #ff6666; }
+        .alert-warning { border-left: 3px solid #ffc857; }
+        .alert-info { border-left: 3px solid #6bc8ff; }
+        .btn-close { filter: invert(1) grayscale(100%) brightness(180%); }
 
+        .badge.text-bg-success, .bg-success { color: #11150c !important; background-color: var(--velo-lime) !important; }
+        .pagination { --bs-pagination-bg: #151819; --bs-pagination-color: #dfe4e1; --bs-pagination-border-color: var(--velo-border); --bs-pagination-hover-bg: #252b2c; --bs-pagination-hover-color: #fff; --bs-pagination-hover-border-color: rgba(181,255,53,.35); --bs-pagination-active-bg: var(--velo-lime); --bs-pagination-active-color: #11150c; --bs-pagination-active-border-color: var(--velo-lime); --bs-pagination-disabled-bg: #111516; }
+        .dropdown-item { color: #e9edea; }
+        .dropdown-item:hover, .dropdown-item:focus { color: #fff; background-color: #252b2c; }
+        hr { border-color: var(--velo-border); opacity: 1; }
+
+        .footer {
+            margin-top: auto;
+            padding: 1.35rem 0;
+            color: #919996;
+            border-top: 1px solid var(--velo-border);
+            background: rgba(8, 10, 11, .88);
+        }
+        .footer p { color: #c4cac6; font-size: .9rem; }
+        .footer small { color: #737c77; letter-spacing: .04em; }
+
+        @media (max-width: 991.98px) {
+            .navbar-collapse { padding: .8rem 0 .35rem; }
+            .navbar .nav-link.active::after { right: auto; width: 2rem; }
+            main.container { width: min(100% - 1.5rem, 1480px); }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-brand { margin-right: .5rem; font-size: 1.15rem; }
+            main.container { width: min(100% - 1.25rem, 1480px); padding-top: 1.8rem; }
+            main h1, main .h1 { font-size: 2rem; }
+            .table-responsive { border: 1px solid var(--velo-border); border-radius: .6rem; }
+            .table > :not(caption) > * > * { padding: .72rem .65rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-
-    <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'lista_bicicletas' %}">
-                <i class="bi bi-bicycle"></i> VELOCE <span style="font-size:0.8em; font-weight:300; color:var(--text-main)"></span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- Marca principal que actúa como punto de retorno -->
+            <a class="navbar-brand" href="{% url 'lista_bicicletas' %}">VELOCE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir navegación">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <!-- Botón de Catálogo eliminado exitosamente -->
+                <div class="ms-auto"></div>
+                <!-- Opciones de usuario / sesión alineadas a la derecha -->
+                <ul class="navbar-nav align-items-lg-center">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item me-lg-3 text-light py-2 py-lg-0">
+                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="{% url 'logout' %}">Cerrar sesión</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Iniciar sesión</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-
-    <!-- Contenido Principal -->
-    <main class="flex-grow-1 py-5">
-        <div class="container">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            {% block content %}{% endblock %}
-        </div>
+    <main class="container my-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
     </main>
-
-    <!-- Footer -->
-    <footer class="text-center">
+    <footer class="footer text-center">
         <div class="container">
-            <p class="mb-1">&copy; 2026 Veloce Premium Bikes. Todos los derechos reservados.</p>
-            <small class="text-muted">Sistema de Gestión CRUD</small>
+            <p class="mb-0">© 2026 Veloce Premium Bikes. Todos los derechos reservados.</p>
+            <small>Sistema de Gestión CRUD</small>
         </div>
     </footer>
-
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
